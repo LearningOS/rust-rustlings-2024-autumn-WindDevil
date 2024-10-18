@@ -8,7 +8,7 @@
 fn main() {
     let my_option: Option<()> = None;
     if my_option.is_none() {
-        panic!("This option is empty!");
+        // panic!("This option is empty!");
     }
 
     let my_arr = &[
