@@ -2,7 +2,6 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -52,9 +51,15 @@ impl<T> Default for Queue<T> {
     }
 }
 
+enum SelectedQueue{
+    Q1,
+    Q2,
+}
+
 pub struct myStack<T>
 {
 	//TODO
+    flag: SelectedQueue,
 	q1:Queue<T>,
 	q2:Queue<T>
 }
@@ -62,20 +67,49 @@ impl<T> myStack<T> {
     pub fn new() -> Self {
         Self {
 			//TODO
+            flag: SelectedQueue::Q1,
 			q1:Queue::<T>::new(),
 			q2:Queue::<T>::new()
         }
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        let q = match self.flag{
+            SelectedQueue::Q1 => &mut self.q1,
+            SelectedQueue::Q2 => &mut self.q2,
+        };
+        q.enqueue(elem);
     }
-    pub fn pop(&mut self) -> Result<T, &str> {
+    pub fn pop(& mut self) -> Result<T, &str> {
         //TODO
-		Err("Stack is empty")
+        let (q1,q2) = match self.flag{
+            SelectedQueue::Q1 => (&mut self.q1,&mut self.q2),
+            SelectedQueue::Q2 => (&mut self.q2,&mut self.q1),
+        };
+
+        if q1.is_empty(){
+            return Err("Stack is empty");
+        }
+
+        let mut elem = q1.dequeue().unwrap();
+        while !q1.is_empty(){
+            q2.enqueue(elem);
+            elem = q1.dequeue().unwrap();
+        }
+
+        self.flag = match self.flag {
+            SelectedQueue::Q1 => SelectedQueue::Q2,
+            SelectedQueue::Q2 => SelectedQueue::Q1,
+        };
+
+        Ok(elem)
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        match self.flag{
+            SelectedQueue::Q1 => self.q1.is_empty(),
+            SelectedQueue::Q2 => self.q2.is_empty(),
+        }
     }
 }
 

@@ -3,7 +3,6 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -31,8 +30,8 @@ impl<T> Stack<T> {
 		self.size += 1;
 	}
 	fn pop(&mut self) -> Option<T> {
-		// TODO
-		None
+		self.size-=1;
+		self.data.pop()
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -99,10 +98,38 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 	}
 }
 
+const BRACKET:[char;6] = ['{','[','(',')',']','}'];
+const LEFT:[char;3] = ['{','[','('];
+const RIGHT:[char;3] = [')',']','}'];
+
+fn is_pair(a:&char,b:&char) -> bool{
+	((*a == '{' && *b == '}') || (*a == '}' && *b == '{')) 
+	|| ((*a == '[' && *b == ']') || (*a == ']' && *b == '[')) 
+	|| ((*a == '(' && *b == ')') || (*a == ')' && *b == '('))
+}
+
+
 fn bracket_match(bracket: &str) -> bool
 {
-	//TODO
-	true
+	let mut stack = Stack::<char>::new();
+	for c in bracket.chars(){
+		if LEFT.contains(&c){
+			stack.push(c);
+			continue;
+		}
+		if RIGHT.contains(&c){
+			let top = match stack.peek(){
+				Some(mem) => mem,
+				None => return false,
+			};
+			if is_pair(&c,&top){
+				stack.pop();
+			}else{
+				return false;
+			}
+		}
+	}
+	stack.is_empty()
 }
 
 #[cfg(test)]

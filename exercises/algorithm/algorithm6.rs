@@ -2,8 +2,6 @@
 	dfs
 	This problem requires you to implement a basic DFS traversal
 */
-
-// I AM NOT DONE
 use std::collections::HashSet;
 
 struct Graph {
@@ -22,10 +20,46 @@ impl Graph {
         self.adj[dest].push(src); 
     }
 
-    fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
-        //TODO
-    }
+    // fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
+    //     //TODO
+    //     let mut cur = v;  // 当前指向的指针
+    //     visit_order.push(cur);
+    //     visited.insert(cur);
+    //     loop{
+    //         let mut cnt = 0;
+    //         for i in &self.adj[cur]{
+    //             if !visited.contains(i){
+    //                 visit_order.push(*i);
+    //                 visited.insert(*i);
+    //                 cur = *i;
+    //                 break;
+    //             }
+    //             cnt+=1;
+    //         }
+    //         if cnt>=self.adj[cur].len(){
+    //             if cur==v{
+    //                 break;
+    //             }
+    //             for i in (0..visit_order.len()).rev(){
+    //                 cur = visit_order[i];
+    //             }
+    //         }
+    //     }
+    // }
 
+    fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
+        // 标记当前节点为已访问
+        visited.insert(v);
+        // 将当前节点加入访问顺序列表
+        visit_order.push(v);
+
+        // 递归访问所有未访问的邻接节点
+        for &neighbor in &self.adj[v] {
+            if !visited.contains(&neighbor) {
+                self.dfs_util(neighbor, visited, visit_order);
+            }
+        }
+    }
     // Perform a depth-first search on the graph, return the order of visited nodes
     fn dfs(&self, start: usize) -> Vec<usize> {
         let mut visited = HashSet::new();

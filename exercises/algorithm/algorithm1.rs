@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,15 +68,55 @@ impl<T> LinkedList<T> {
             },
         }
     }
+	// pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	// {
+    //     let mut start_a = list_a.start;
+    //     let mut start_b = list_b.start;
+    //     let mut list_c = LinkedList::<T>::new();
+    //     while let (Some(ptr_a), Some(ptr_b)) = (start_a, start_b) {
+    //         let node_a = unsafe { &(*ptr_a.as_ptr()) };
+    //         let node_b = unsafe { &(*ptr_b.as_ptr()) };
+    //         if node_a.val < node_b.val {
+    //             list_c.add(node_a.val);
+    //             start_a = node_a.next;
+    //         } else {
+    //             list_c.add(node_b.val);
+    //             start_b = node_b.next;
+    //         }
+    //     }
+    //     list_c
+    // }
+}
+
+impl<T:std::cmp::PartialOrd+Copy> LinkedList<T>{
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut start_a = list_a.start;
+        let mut start_b = list_b.start;
+        let mut list_c = LinkedList::<T>::new();
+        while let (Some(ptr_a), Some(ptr_b)) = (start_a, start_b) {
+            let node_a = unsafe { &(*ptr_a.as_ptr()) };
+            let node_b = unsafe { &(*ptr_b.as_ptr()) };
+            if node_a.val < node_b.val {
+                list_c.add(node_a.val);
+                start_a = node_a.next;
+            } else {
+                list_c.add(node_b.val);
+                start_b = node_b.next;
+            }
         }
-	}
+        while let Some(ptr_a) = start_a {
+            let node_a = unsafe { &(*ptr_a.as_ptr()) };
+            list_c.add(node_a.val);
+            start_a = node_a.next;
+        }
+        while let Some(ptr_b) = start_b {
+            let node_b = unsafe { &(*ptr_b.as_ptr()) };
+            list_c.add(node_b.val);
+            start_b = node_b.next;
+        }
+        list_c
+    }
 }
 
 impl<T> Display for LinkedList<T>
